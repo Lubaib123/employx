@@ -43,7 +43,7 @@ const Contact = () => {
                             <MapPin className="icon" size={24} />
                             <div>
                                 <h4>Address</h4>
-                                <p>123 Education Lane, Career City, State, India</p>
+                                <p>Building No: 354, Fifteen square, 1st Floor, Kondotty Malappuram, Kerala 673638</p>
                             </div>
                         </div>
                     </motion.div>

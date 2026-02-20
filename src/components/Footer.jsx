@@ -8,8 +8,7 @@ const Footer = () => {
                 <div className="footer-content">
                     <div className="footer-brand">
                         <div className="logo white">
-                            <span className="logo-icon">e</span>
-                            <span className="logo-text">EMPLOYX</span>
+                            <img src="/logo.png" alt="EMPLOYX" className="logo-img" />
                         </div>
                         <p>
                             Helping students find their dream colleges and careers.

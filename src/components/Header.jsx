@@ -18,8 +18,7 @@ const Header = () => {
         <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
             <div className="container header-container">
                 <div className="logo">
-                    <span className="logo-icon">e</span>
-                    <span className="logo-text">EMPLOYX</span>
+                    <img src="/logo.png" alt="EMPLOYX" className="logo-img" />
                 </div>
 
                 <nav className="desktop-nav">
