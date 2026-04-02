@@ -1,13 +1,21 @@
 import { useState, useEffect } from 'react'
+import { motion, useScroll, useSpring } from 'framer-motion'
 import Header from './components/Header'
 import Hero from './components/Hero'
+import ClientsList from './components/ClientsList'
 import About from './components/About'
 import Services from './components/Services'
 import Contact from './components/Contact'
 import Footer from './components/Footer'
 
 function App() {
-  // Simple smooth scroll behavior for anchor links
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
   useEffect(() => {
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
       anchor.addEventListener('click', function (e) {
@@ -17,7 +25,7 @@ function App() {
 
         if (targetElement) {
           window.scrollTo({
-            top: targetElement.offsetTop - 80, // Offset for fixed header
+            top: targetId === "home" ? 0 : targetElement.offsetTop - 80, 
             behavior: 'smooth'
           });
         }
@@ -27,11 +35,17 @@ function App() {
 
   return (
     <div className="app-main">
+      <motion.div className="scroll-progress" style={{ scaleX }} />
       <Header />
-      <Hero />
-      <About />
-      <Services />
-      <Contact />
+      
+      <main>
+        <Hero />
+        <About />
+        <Services />
+        <ClientsList />
+        <Contact />
+      </main>
+
       <Footer />
     </div>
   )

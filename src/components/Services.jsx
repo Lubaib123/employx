@@ -4,24 +4,28 @@ import { GraduationCap, Briefcase, Zap, Users } from 'lucide-react';
 
 const services = [
     {
-        icon: <GraduationCap size={32} />,
-        title: "For Students",
-        description: "Get guidance from experts and find the best colleges that align with your career goals."
+        icon: <GraduationCap size={48} />,
+        title: "Global Placement",
+        description: "Direct access to top-tier universities worldwide with guaranteed career support.",
+        image: "/assets/university_placement_bg.png"
     },
     {
-        icon: <Briefcase size={32} />,
-        title: "Career Support",
-        description: "We don't just find you a college; we help you secure a job after graduation."
+        icon: <Briefcase size={36} />,
+        title: "Career GPS",
+        description: "Personalized roadmaps to your dream job.",
+        image: "/assets/career_gps_bg.png"
     },
     {
-        icon: <Users size={32} />,
-        title: "Expert Mentorship",
-        description: "Connect with seasoned professionals who can guide you through your career path."
+        icon: <Zap size={36} />,
+        title: "Visa Elite",
+        description: "Expedited processing with 99% success rate.",
+        image: "/assets/visa_elite_bg.png"
     },
     {
-        icon: <Zap size={32} />,
-        title: "Fast Track",
-        description: "Streamlined admission and placement processes to save you time and effort."
+        icon: <Users size={48} />,
+        title: "Expert Network",
+        description: "One-on-one mentorship from industry leaders and alumni of premier institutions.",
+        image: "/assets/expert_network_bg.png"
     }
 ];
 
@@ -40,14 +44,20 @@ const Services = () => {
                         <motion.div
                             key={index}
                             className="service-card"
+                            style={{ 
+                                backgroundImage: `linear-gradient(rgba(0,0,0,0), rgba(0,0,0,0.4)), url(${service.image})`,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                color: 'white'
+                            }}
                             initial={{ opacity: 0, y: 30 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ delay: index * 0.1, duration: 0.5 }}
                             viewport={{ once: true }}
                         >
-                            <div className="icon-wrapper">{service.icon}</div>
-                            <h3>{service.title}</h3>
-                            <p>{service.description}</p>
+                            <div className="icon-wrapper" style={{ color: 'white' }}>{service.icon}</div>
+                            <h3 style={{ color: 'white' }}>{service.title}</h3>
+                            <p style={{ color: 'rgba(255,255,255,0.9)' }}>{service.description}</p>
                         </motion.div>
                     ))}
                 </div>

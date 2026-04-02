@@ -1,8 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, CheckCircle } from 'lucide-react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
 
 const Contact = () => {
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false);
+    const [error, setError] = useState(null);
+
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        if (!formData.name || !formData.email || !formData.message) {
+            setError('Please fill in all fields.');
+            return;
+        }
+
+        setIsSubmitting(true);
+        setError(null);
+
+        try {
+            await addDoc(collection(db, 'leads'), {
+                ...formData,
+                timestamp: serverTimestamp(),
+                status: 'new'
+            });
+            setIsSuccess(true);
+            setFormData({ name: '', email: '', message: '' });
+            setTimeout(() => setIsSuccess(false), 5000);
+        } catch (err) {
+            console.error('Error adding document: ', err);
+            setError('There was an error submitting your message. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
     return (
         <section id="contact" className="contact-section">
             <div className="container">
@@ -55,21 +94,46 @@ const Contact = () => {
                         transition={{ duration: 0.6 }}
                         viewport={{ once: true }}
                     >
-                        <form className="contact-form">
+                        <form className="contact-form" onSubmit={handleSubmit}>
+                            {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
+                            {isSuccess && (
+                                <div style={{ color: 'green', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <CheckCircle size={18} /> Message sent successfully!
+                                </div>
+                            )}
+
                             <div className="form-group">
                                 <label>Name</label>
-                                <input type="text" placeholder="John Doe" />
+                                <input
+                                    type="text"
+                                    name="name"
+                                    placeholder="John Doe"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>Email</label>
-                                <input type="email" placeholder="john@example.com" />
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="john@example.com"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
                             </div>
                             <div className="form-group">
                                 <label>Message</label>
-                                <textarea rows="4" placeholder="How can we help you?"></textarea>
+                                <textarea
+                                    rows="4"
+                                    name="message"
+                                    placeholder="How can we help you?"
+                                    value={formData.message}
+                                    onChange={handleChange}
+                                ></textarea>
                             </div>
-                            <button type="submit" className="btn-primary w-full">
-                                Send Message <Send size={18} />
+                            <button type="submit" className="btn-primary w-full" disabled={isSubmitting}>
+                                {isSubmitting ? 'Sending...' : 'Send Message'} <Send size={18} />
                             </button>
                         </form>
                     </motion.div>

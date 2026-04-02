@@ -17,8 +17,15 @@ const Header = () => {
     return (
         <header className={`header ${isScrolled ? 'scrolled' : ''}`}>
             <div className="container header-container">
-                <div className="logo">
-                    <img src="/logo.png" alt="EMPLOYX" className="logo-img" />
+                <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <img src="/logo.png" alt="Employx Icon" style={{ height: '32px', width: 'auto' }} />
+                    <span style={{ 
+                        fontFamily: 'Poppins, sans-serif', 
+                        fontSize: '24px', 
+                        fontWeight: '700', 
+                        color: 'var(--color-primary)',
+                        letterSpacing: '-0.02em'
+                    }}>Employx</span>
                 </div>
 
                 <nav className="desktop-nav">
