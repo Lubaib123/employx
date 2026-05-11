@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Admin access: Allow authenticated users full access to all collections
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // Public access for the main website
+    match /clients/{client} {
+      allow read: if true;
+      allow write: if false;
+    }
+    
+    match /leads/{lead} {
+      // Allow public creation of leads
+      allow create: if true;
+      // Note: Admin read/write is already covered by the catch-all rule above
+    }
+  }
+}

@@ -15,6 +15,9 @@ const ClientsList = () => {
             });
             setClients(temp);
             setLoading(false);
+        }, (error) => {
+            console.error("Error fetching clients:", error);
+            setLoading(false);
         });
 
         return () => unsubscribe();

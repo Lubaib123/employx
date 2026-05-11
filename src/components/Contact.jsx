@@ -22,15 +22,47 @@ const Contact = () => {
             return;
         }
 
+        // 1. Client-side instant block (localStorage)
+        const recentSubmissions = JSON.parse(localStorage.getItem('submission_ts') || '[]');
+        const now = Date.now();
+        const oneDayAgo = now - 24 * 60 * 60 * 1000;
+        
+        // Filter out old timestamps
+        const validSubmissions = recentSubmissions.filter(ts => ts > oneDayAgo);
+        
+        if (validSubmissions.length >= 3) {
+            setError('Too many messages sent. Please try again tomorrow.');
+            return;
+        }
+
         setIsSubmitting(true);
         setError(null);
 
         try {
+            // 2. Get User IP for secondary validation
+            let userIp = 'unknown';
+            try {
+                const ipResponse = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipResponse.json();
+                userIp = ipData.ip;
+            } catch (ipErr) {
+                console.warn('Could not fetch IP, proceeding with basic validation');
+            }
+
+            // 3. Optional: You could query Firestore here to check the IP count, 
+            // but for most spam, localStorage + IP storage is enough to track and block.
+            
             await addDoc(collection(db, 'leads'), {
                 ...formData,
+                ip: userIp,
                 timestamp: serverTimestamp(),
                 status: 'new'
             });
+
+            // 4. Update localStorage
+            validSubmissions.push(now);
+            localStorage.setItem('submission_ts', JSON.stringify(validSubmissions));
+
             setIsSuccess(true);
             setFormData({ name: '', email: '', message: '' });
             setTimeout(() => setIsSuccess(false), 5000);
@@ -97,9 +129,26 @@ const Contact = () => {
                         <form className="contact-form" onSubmit={handleSubmit}>
                             {error && <div style={{ color: 'red', marginBottom: '1rem' }}>{error}</div>}
                             {isSuccess && (
-                                <div style={{ color: 'green', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <CheckCircle size={18} /> Message sent successfully!
-                                </div>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: -20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    className="success-message"
+                                    style={{ 
+                                        backgroundColor: '#ecfdf5', 
+                                        color: '#065f46', 
+                                        padding: '1rem', 
+                                        borderRadius: '12px',
+                                        marginBottom: '1.5rem',
+                                        display: 'flex', 
+                                        alignItems: 'center', 
+                                        gap: '0.75rem',
+                                        border: '1px solid #10b981',
+                                        fontWeight: '600'
+                                    }}
+                                >
+                                    <CheckCircle size={20} className="text-emerald-500" /> 
+                                    <span>Thank you! Your message has been sent successfully.</span>
+                                </motion.div>
                             )}
 
                             <div className="form-group">

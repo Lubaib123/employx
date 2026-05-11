@@ -1,6 +1,8 @@
 {
+    "firestore": {
+        "rules": "firestore.rules"
+    },
     "hosting": {
-        "site": "employx-72b7f",
         "public": "dist",
         "ignore": [
             "firebase.json",
